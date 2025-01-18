@@ -132,8 +132,6 @@ export async function getConvertedFile(idToken: string, convertedFileId: string)
 
         const storageUrl = `https://storage.ircamamplify.io/${convertedFileId}/${fileName}`
 
-
-
         const getResponse = await fetch(storageUrl, {
             headers: {
                 'Content-Type': 'application/json',
@@ -150,7 +148,8 @@ export async function getConvertedFile(idToken: string, convertedFileId: string)
         
         return {
             blob: blob,
-            filename: fileName
+            fileInfo: fileInfo,
+            fileName: fileName
         }
 
 

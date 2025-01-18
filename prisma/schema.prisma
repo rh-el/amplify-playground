@@ -35,7 +35,7 @@ model Loop {
 model Time {
   id            Int        @id @default(autoincrement())
   loop_id       Int
-  time_speed    Int
+  time_speed    Float
   ias_time_url  String
   updated_at    DateTime   @updatedAt
   created_at    DateTime   @default(now())

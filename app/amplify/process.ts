@@ -3,6 +3,71 @@
 const clientId = process.env.API_CLIENT_ID
 const clientSecret = process.env.API_CLIENT_SECRET
 
+export async function processLoopExtractor(idToken: string, fileIas: string) {
+
+    const moduleUrl = "https://api.ircamamplify.io/loopextractor/"
+
+    const requestBody = JSON.stringify({
+        audioUrl: fileIas
+    })
+
+    try {
+
+        const response = await fetch(moduleUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json', 
+                'Authorization': `Bearer ${idToken}`
+            },
+            body: requestBody
+        })
+
+        const data = await response.json()
+        console.log("loop extractor data: ",data)
+        return data.id
+
+    } catch (error) {
+        console.error('error extracting loop with loop extractor module: ', error)
+        throw error
+
+    }
+
+
+}
+
+export async function processTimeControl(idToken: string, fileIas: string, speedFactor: number) {
+
+    const moduleUrl = "https://api.ircamamplify.io/timepitchcontrol/"
+
+    const requestBody = JSON.stringify({
+        audioUrl: fileIas,
+        speedFactor: speedFactor
+    })
+
+    try {
+
+        const response = await fetch(moduleUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json', 
+                'Authorization': `Bearer ${idToken}`
+            },
+            body: requestBody
+        })
+
+        const data = await response.json()
+        console.log("time control data: ", data)
+        return data.id
+
+    } catch (error) {
+        console.error('error extracting loop with loop extractor module: ', error)
+        throw error
+
+    }
+}
+
 export async function processStereoToSpatial(idToken: string, fileIas: string, presetId: number) {
 
     const moduleUrl = "https://api.ircamamplify.io/stereotospatial/"
@@ -35,9 +100,9 @@ export async function processStereoToSpatial(idToken: string, fileIas: string, p
     }
 }
 
-export async function getProcessingInfos(idToken: string, convertedFileId: string) {
+export async function getProcessingInfos(idToken: string, convertedFileId: string, module: string) {
 
-    const moduleUrl = `https://api.ircamamplify.io/stereotospatial/${convertedFileId}`
+    const moduleUrl = `https://api.ircamamplify.io/${module}/${convertedFileId}`
 
     try {
 
@@ -59,9 +124,9 @@ export async function getProcessingInfos(idToken: string, convertedFileId: strin
 
 }
 
-export async function getProcessedId(idToken: string, jobId: string) {
+export async function getProcessedId(idToken: string, jobId: string, module: string) {
 
-    const moduleUrl = `https://api.ircamamplify.io/stereotospatial/${jobId}`
+    const moduleUrl = `https://api.ircamamplify.io/${module}/${jobId}`
 
     try {
 
@@ -75,7 +140,12 @@ export async function getProcessedId(idToken: string, jobId: string) {
 
         const data = await response.json()
         console.log("data in getProcessedId: ", data)
-        console.log("report: ", data.job_infos.report_info.report)
+
+        if (module === "loopextractor") return data.job_infos.report_info.report.loops
+        if (module === "timepitchcontrol") return data.job_infos.report_info.report.outputFile.ias
+
+
+        // for spatial audio
         // replace binauralFile by immersiveFile for wav
         return data.job_infos.report_info.report.binauralFile.id
 

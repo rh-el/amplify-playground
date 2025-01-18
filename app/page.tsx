@@ -119,7 +119,7 @@ export default async function Main() {
                         // onChange={() => areaStore.setAreaMode("modulate")} 
                     />
                     <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        1
+                        slowed
                     </div>
                 </label>
 
@@ -133,7 +133,7 @@ export default async function Main() {
                         // onChange={() => areaStore.setAreaMode("modulate")} 
                     />
                     <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        2
+                        normal
                     </div>
                 </label>
 
@@ -147,7 +147,7 @@ export default async function Main() {
                         // onChange={() => areaStore.setAreaMode("modulate")} 
                     />
                     <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        3
+                        speeded
                     </div>
                 </label>
 

@@ -1,9 +1,11 @@
 import { create } from 'zustand'
-import { SampleStoreType } from './model'
+import { SampleObjectType, SampleStoreType } from './model'
 
 export const useSampleStore = create<SampleStoreType>((set) => ({
     selectedMode: "catalogue-sample",
-    setSelectedMode: (mode: string) => set(() => ({ selectedMode: mode }))
+    setSelectedMode: (mode: string) => set(() => ({ selectedMode: mode })),
+    storedSamplesObjects: [],
+    addSampleObject: (sampleObject: SampleObjectType) => set((state) => ({ storedSamplesObjects: [...state.storedSamplesObjects, sampleObject] })),
     // center: INITIAL_CENTER,
     // setCenter: (lng: number, lat: number) => set(() => ({ center: [lng, lat]})),
     // zoom: INITIAL_ZOOM,
