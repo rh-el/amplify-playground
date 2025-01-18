@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+
+}
+
+model Sample {
+  id          Int        @id @default(autoincrement())
+  name        String
+  sample_url  String
+  updated_at  DateTime   @updatedAt
+  created_at  DateTime   @default(now())
+}
+
+model Loop {
+  id            Int        @id @default(autoincrement())
+  sample_id     Int
+  loop_number   Int
+  ias_loop_url  String
+  updated_at    DateTime   @updatedAt
+  created_at    DateTime   @default(now())
+}
+
+model Time {
+  id            Int        @id @default(autoincrement())
+  loop_id       Int
+  time_speed    Int
+  ias_time_url  String
+  updated_at    DateTime   @updatedAt
+  created_at    DateTime   @default(now())
+}
+
+model Spatial {
+  id              Int        @id @default(autoincrement())
+  time_id         Int
+  spatial_preset  Int
+  ias_spatial_url String
+  updated_at      DateTime   @updatedAt
+  created_at      DateTime   @default(now())
+}
+
+model Stem {
+  id              Int        @id @default(autoincrement())
+  spatial_id      Int
+  stem_instrument Int
+  ias_stem_url    String
+  updated_at      DateTime   @updatedAt
+  created_at      DateTime   @default(now())
+}
