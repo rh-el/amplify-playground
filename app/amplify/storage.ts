@@ -112,9 +112,9 @@ export async function getFileIas(idToken: string, fileId: string) {
 }
 
 
-export async function getConvertedFile(idToken: string, convertedFileId: string) {
+export async function getConvertedFile(idToken: string, iasId: string) {
 
-    const moduleUrl = `https://storage.ircamamplify.io/manager/${convertedFileId}`
+    const moduleUrl = `https://storage.ircamamplify.io/manager/${iasId}`
 
     try {
 
@@ -130,7 +130,7 @@ export async function getConvertedFile(idToken: string, convertedFileId: string)
         const fileName = fileInfo.filename
         console.log("data in getConvertedFile: ", fileInfo)
 
-        const storageUrl = `https://storage.ircamamplify.io/${convertedFileId}/${fileName}`
+        const storageUrl = `https://storage.ircamamplify.io/${iasId}/${fileName}`
 
         const getResponse = await fetch(storageUrl, {
             headers: {
@@ -140,11 +140,7 @@ export async function getConvertedFile(idToken: string, convertedFileId: string)
             }
         })
 
-        console.log("getReponse: ", getResponse)
-
         const blob = await getResponse.blob()
-        console.log("blob in getConvertedFile: ", blob)
-
         
         return {
             blob: blob,

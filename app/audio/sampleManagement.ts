@@ -12,12 +12,35 @@ export const linkBufferToSource = (audioBuffer: AudioBuffer, context: AudioConte
     return source
 }
 
-export const initSource = async (url: string, gainNode: GainNode, context: AudioContext) => {
-    const buffer = await createBuffer(url, context)
-    const source = linkBufferToSource(buffer, context)
-    source.connect(gainNode)
-    gainNode.connect(context.destination)
-    return source
+// export const initSource = async (url: string, gainNode: GainNode, context: AudioContext) => {
+//     const buffer = await createBuffer(url, context)
+//     const source = linkBufferToSource(buffer, context)
+//     source.connect(gainNode)
+//     gainNode.connect(context.destination)
+//     return source
+// }
+
+export const initSource = async (ctx: AudioContext, blob: Blob) => {
+
+    try {
+        const arrayBuffer = await blob.arrayBuffer()
+        console.log(blob)
+        const audioBuffer = await ctx.decodeAudioData(arrayBuffer)
+        console.log(audioBuffer)
+        return audioBuffer
+
+    } catch (error) {
+        console.error("error deconding audio data:", error)
+        throw error
+    }
+}
+
+export const playAudioBuffer = (ctx: AudioContext, audioBuffer: AudioBuffer) => {
+    const source = ctx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(ctx.destination);
+    source.start(0);
+    return source;
 }
 
 export const createLogarithmicCurve = (direction: number, context: AudioContext, currentGain: number) => {

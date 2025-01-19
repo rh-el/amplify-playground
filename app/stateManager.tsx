@@ -1,11 +1,16 @@
 import { create } from 'zustand'
-import { SampleObjectType, SampleStoreType } from './model'
+import { GlobalStateType, SampleObjectType, SampleStoreType } from './model'
 
 export const useSampleStore = create<SampleStoreType>((set) => ({
     selectedMode: "catalogue-sample",
     setSelectedMode: (mode: string) => set(() => ({ selectedMode: mode })),
     storedSamplesObjects: [],
     addSampleObject: (sampleObject: SampleObjectType) => set((state) => ({ storedSamplesObjects: [...state.storedSamplesObjects, sampleObject] })),
+    idToken: "",
+    setIdToken: (idToken: string) => set(() => ({ idToken: idToken })),
+    timeControl: "time-normal",
+    setTimeControl: (control: string) => set(() => ({ timeControl: control})),
+    
     // center: INITIAL_CENTER,
     // setCenter: (lng: number, lat: number) => set(() => ({ center: [lng, lat]})),
     // zoom: INITIAL_ZOOM,
@@ -23,4 +28,15 @@ export const useSampleStore = create<SampleStoreType>((set) => ({
 
     // audioContext: null,
     // setAudioContext: (context: AudioContext | null) => set(() => ({ audioContext: context }))
+}))
+
+export const useGlobalStates = create<GlobalStateType>((set) => ({
+    isProcessingSound: false,
+    setIsProcessingSound: (bool: boolean) => set(() => ({ isProcessingSound: bool })),
+    currentProcess: "",
+    setCurrentProcess: (processName: string) => set(() => ({ currentProcess: processName })),
+    audioContext: null,
+    setAudioContext: (context: AudioContext | null) => set(() => ({ audioContext: context })),
+    isLoadingBuffer: false,
+    setIsLoadingBuffer: (bool: boolean) => set(() => ({ isLoadingBuffer: bool }))
 }))

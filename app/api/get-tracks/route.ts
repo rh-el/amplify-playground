@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
 
     try {
-        console.log('cccc')
+
         const allTracks = await prisma.sample.findMany({
             select: {
                 id: true,
@@ -13,7 +13,7 @@ export async function GET() {
             }
         })
         console.log('all tracks: ', allTracks)
-        return NextResponse.json({  }, { status: 200 })
+        return NextResponse.json(allTracks, { status: 200 })
 
     } catch (error) {
 

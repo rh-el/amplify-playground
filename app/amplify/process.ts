@@ -141,13 +141,13 @@ export async function getProcessedId(idToken: string, jobId: string, module: str
         const data = await response.json()
         console.log("data in getProcessedId: ", data)
 
-        if (module === "loopextractor") return data.job_infos.report_info.report.loops
-        if (module === "timepitchcontrol") return data.job_infos.report_info.report.outputFile.ias
+        // if (module === "loopextractor") return data.job_infos.report_info.report.loops
+        if (module === "timepitchcontrol") return data.job_infos.report_info.report.outputFile.id
 
-
-        // for spatial audio
         // replace binauralFile by immersiveFile for wav
-        return data.job_infos.report_info.report.binauralFile.id
+        if (module === "stereotospatial") return data.job_infos.report_info.report.binauralFile.id
+
+
 
     } catch (error) {
         console.error('error getting processed id: ', error)

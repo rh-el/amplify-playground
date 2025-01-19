@@ -1,5 +1,7 @@
 "use server"
 
+import { AllIasType } from "../model"
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
 export const getTracks = async() => {
@@ -11,7 +13,8 @@ export const getTracks = async() => {
             headers: {}
         })
         const allTracksData = await response.json()
-        return allTracksData.allTracks
+        console.log(allTracksData)
+        return allTracksData
 
     } catch (error) {
         console.error('error getting all tracks:', error)
@@ -19,7 +22,7 @@ export const getTracks = async() => {
     }
 }
 
-export const saveSampleInfos = async(table: string, param: string, url: string, foreignId?: number) => {
+export const saveSampleInfos = async(table: string, param: string | number, url: string, foreignId?: number) => {
 
     let requestBody, response, savedData
     switch (table) {
@@ -40,22 +43,22 @@ export const saveSampleInfos = async(table: string, param: string, url: string, 
             savedData = await response.json()
             return savedData
 
-        case "loop":
+        // case "loop":
 
-            requestBody = JSON.stringify({
-            loop_number: Number(param),
-            sample_id: foreignId,
-            ias_loop_url: url
-            })
+        //     requestBody = JSON.stringify({
+        //     loop_number: Number(param),
+        //     sample_id: foreignId,
+        //     ias_loop_url: url
+        //     })
 
-            response = await fetch(`${baseUrl}/api/save-loop-infos`, {
-                method: "POST",
-                headers: {},
-                body: requestBody
-            })
+        //     response = await fetch(`${baseUrl}/api/save-loop-infos`, {
+        //         method: "POST",
+        //         headers: {},
+        //         body: requestBody
+        //     })
 
-            savedData = await response.json()
-            return savedData
+        //     savedData = await response.json()
+        //     return savedData
         
         case "timecontrol":
 
@@ -74,7 +77,7 @@ export const saveSampleInfos = async(table: string, param: string, url: string, 
             savedData = await response.json()
             return savedData
         
-        case "spatial":
+        case "stereotospatial":
 
             requestBody = JSON.stringify({
             spatial_preset: Number(param),
@@ -112,5 +115,21 @@ export const saveSampleInfos = async(table: string, param: string, url: string, 
             break;
     }
 
+
+}
+
+export const getAllIasFromSample = async (id: number) => {
+
+    try {
+        
+        const response = await fetch(`${baseUrl}/api/get-all-ias/${id}`)
+        const allIas = await response.json()
+
+        return allIas as AllIasType
+
+    } catch (error) {
+        console.error('error getting all tracks:', error)
+        throw error
+    }
 
 }

@@ -6,11 +6,15 @@ import { getTracks } from "./lib/data";
 import { SampleType } from "./model";
 import { SampleListElement } from "./components/SampleListElement";
 import { SampleSelector } from "./components/SampleSelector";
+import InitAudioButton from "./components/InitAudioButton";
+import { TimeControlSelector } from "./components/TimeControlSelector";
 
 
 export default async function Main() {
 
-  const tracksInfos: SampleType[] = await getTracks()
+  const tracksInfos = await getTracks()
+
+
 
   return (
     <>
@@ -21,7 +25,8 @@ export default async function Main() {
               <h1 className="font-dm-mono h-32">IRCAM Amplify</h1>
               <h2 className="font-ibm-plex pl-52 text-clip">Playground</h2>
           </div>
-          <div className="">
+          <div className="flex flex-col gap-4">
+            <InitAudioButton />
             <a href='#sample' className="flex flex-col justify-center items-center gap-4">
               <span className="">discovery</span>
               
@@ -29,7 +34,7 @@ export default async function Main() {
                       src="/arrow.svg"
                       width={16}
                       height={16}
-                      alt="Picture of the author"
+                      alt="an arrow icon"
                   />
             </a>
           </div>
@@ -43,8 +48,9 @@ export default async function Main() {
           {/* ////////////////////////////////////////////// PLAYGROUND //////////////////////////////////////////////*/}
         <section id="playground" className="h-svh flex flex-col items-center justify-center gap-16 w-8/12">
             <h2 className="text-center text-8xl">playground</h2>
+            
             <div className="flex flex-col justify-center items-center gap-12 w-full px-8">
-              <div className="flex flex-col justify-center items-center w-7/12 gap-8 ">
+              {/* <div className="flex flex-col justify-center items-center w-7/12 gap-8 ">
                 <h3 className="text-5xl">pick a loop</h3>
                 <div className="flex gap-4 w-full justify-between">
                   <label className="w-full cursor-pointer">
@@ -61,97 +67,54 @@ export default async function Main() {
                     </div>
                   </label>
 
-                <label className="w-full cursor-pointer">
-                    <input 
-                        type="radio"
-                        id="loop-two"
-                        name="loop-selector"
-                        className="hidden peer"
-                        // checked={areaStore.areaMode === "modulate"}
-                        // onChange={() => areaStore.setAreaMode("modulate")} 
-                    />
-                    <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        2
-                    </div>
-                </label>
+                    <label className="w-full cursor-pointer">
+                        <input 
+                            type="radio"
+                            id="loop-two"
+                            name="loop-selector"
+                            className="hidden peer"
+                            // checked={areaStore.areaMode === "modulate"}
+                            // onChange={() => areaStore.setAreaMode("modulate")} 
+                        />
+                        <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
+                            2
+                        </div>
+                    </label>
 
-                <label className="w-full cursor-pointer">
-                    <input 
-                        type="radio"
-                        id="loop-three"
-                        name="loop-selector"
-                        className="hidden peer"
-                        // checked={areaStore.areaMode === "modulate"}
-                        // onChange={() => areaStore.setAreaMode("modulate")} 
-                    />
-                    <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        3
-                    </div>
-                </label>
+                    <label className="w-full cursor-pointer">
+                        <input 
+                            type="radio"
+                            id="loop-three"
+                            name="loop-selector"
+                            className="hidden peer"
+                            // checked={areaStore.areaMode === "modulate"}
+                            // onChange={() => areaStore.setAreaMode("modulate")} 
+                        />
+                        <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
+                            3
+                        </div>
+                    </label>
 
-                <label className="w-full cursor-pointer">
-                    <input 
-                        type="radio"
-                        id="loop-four"
-                        name="loop-selector"
-                        className="hidden peer"
-                        // checked={areaStore.areaMode === "modulate"}
-                        // onChange={() => areaStore.setAreaMode("modulate")} 
-                    />
-                    <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        4
-                    </div>
-                </label>
+                    <label className="w-full cursor-pointer">
+                        <input 
+                            type="radio"
+                            id="loop-four"
+                            name="loop-selector"
+                            className="hidden peer"
+                            // checked={areaStore.areaMode === "modulate"}
+                            // onChange={() => areaStore.setAreaMode("modulate")} 
+                        />
+                        <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
+                            4
+                        </div>
+                    </label>
 
-              </div>
-            </div>
+                </div>
+            </div> */}
 
             <div className="flex flex-col justify-center items-center w-7/12 gap-8">
                 <h3 className="text-5xl">time control</h3>
-                <div className="flex gap-4 w-full justify-between">
-                  <label className="w-full cursor-pointer ">
-                    <input 
-                        type="radio"
-                        id="time-slowed"
-                        name="time-selector"
-                        className="hidden peer"
-                        // checked={areaStore.areaMode === "modulate"}
-                        // onChange={() => areaStore.setAreaMode("modulate")} 
-                    />
-                    <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        slowed
-                    </div>
-                </label>
-
-                <label className="w-full cursor-pointer">
-                    <input 
-                        type="radio"
-                        id="time-normal"
-                        name="time-selector"
-                        className="hidden peer"
-                        // checked={areaStore.areaMode === "modulate"}
-                        // onChange={() => areaStore.setAreaMode("modulate")} 
-                    />
-                    <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        normal
-                    </div>
-                </label>
-
-                <label className="w-full cursor-pointer">
-                    <input 
-                        type="radio"
-                        id="time-speeded"
-                        name="time-selector"
-                        className="hidden peer"
-                        // checked={areaStore.areaMode === "modulate"}
-                        // onChange={() => areaStore.setAreaMode("modulate")} 
-                    />
-                    <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        speeded
-                    </div>
-                </label>
-
-              </div>
+                <TimeControlSelector />
             </div>
 
             <div className="flex flex-col justify-center w-7/12 items-center gap-8">
@@ -174,20 +137,6 @@ export default async function Main() {
                 <label className="w-full cursor-pointer">
                     <input 
                         type="radio"
-                        id="spatial-two"
-                        name="spatial-selector"
-                        className="hidden peer"
-                        // checked={areaStore.areaMode === "modulate"}
-                        // onChange={() => areaStore.setAreaMode("modulate")} 
-                    />
-                    <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        2
-                    </div>
-                </label>
-
-                <label className="w-full cursor-pointer">
-                    <input 
-                        type="radio"
                         id="spatial-three"
                         name="spatial-selector"
                         className="hidden peer"
@@ -196,20 +145,6 @@ export default async function Main() {
                     />
                     <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
                         3
-                    </div>
-                </label>
-
-                <label className="w-full cursor-pointer">
-                    <input 
-                        type="radio"
-                        id="spatial-four"
-                        name="spatial-selector"
-                        className="hidden peer"
-                        // checked={areaStore.areaMode === "modulate"}
-                        // onChange={() => areaStore.setAreaMode("modulate")} 
-                    />
-                    <div className="flex justify-center items-center py-6 text-2xl font-bold  border-4 border-primary rounded-2xl group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
-                        4
                     </div>
                 </label>
 
@@ -229,12 +164,12 @@ export default async function Main() {
               </div>
             </div>
 
-            <div className="flex flex-col justify-center w-7/12 items-center gap-8">
+            {/* <div className="flex flex-col justify-center w-7/12 items-center gap-8">
                 <h3 className="text-5xl">stem separator</h3>
                 <div className="flex gap-4 w-full justify-between">
                   <label className="w-full cursor-pointer ">
                     <input 
-                        type="radio"
+                        type="checkbox"
                         id="stem-drums"
                         name="stem-selector"
                         className="hidden peer"
@@ -248,7 +183,7 @@ export default async function Main() {
 
                 <label className="w-full cursor-pointer">
                     <input 
-                        type="radio"
+                        type="checkbox"
                         id="stem-bass"
                         name="stem-selector"
                         className="hidden peer"
@@ -262,7 +197,7 @@ export default async function Main() {
 
                 <label className="w-full cursor-pointer">
                     <input 
-                        type="radio"
+                        type="checkbox"
                         id="stem-voals"
                         name="stem-selector"
                         className="hidden peer"
@@ -276,7 +211,7 @@ export default async function Main() {
 
                 <label className="w-full cursor-pointer">
                     <input 
-                        type="radio"
+                        type="checkbox"
                         id="stem-other"
                         name="stem-selector"
                         className="hidden peer"
@@ -288,10 +223,7 @@ export default async function Main() {
                     </div>
                 </label>
               </div>
-
-              
-
-            </div>
+            </div> */}
 
           </div>
         </section>

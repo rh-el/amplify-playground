@@ -3,39 +3,52 @@
 import React, { useRef } from 'react'
 import { SampleType } from '../model'
 import { SampleListElement } from './SampleListElement'
-import { useSampleStore } from '../stateManager'
+import { useGlobalStates, useSampleStore } from '../stateManager'
 import { createStorage, getConvertedFile, getFileIas, getToken, uploadFileApi } from '../amplify/storage'
 import { getProcessedId, getProcessingInfos, processLoopExtractor, processStereoToSpatial, processTimeControl } from '../amplify/process'
 import { saveSampleInfos } from '../lib/data'
+import { initSource } from '../audio/sampleManagement'
 
 
 export const SampleSelector = ({ trackInfos }: { trackInfos: SampleType[] }) => {
 
+
   const sampleStore = useSampleStore()
+  const globalStates = useGlobalStates()
   const inputFile = useRef< HTMLInputElement | null >(null)
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
 
     if (!event.target.files || event.target.files.length <= 0) return    
-  
+    globalStates.setIsProcessingSound(true)
+    
         try {
-  
-            const idToken = await getToken()
+
+            globalStates.setCurrentProcess("getting token, creating storage space")
+
+            const idToken = await getToken()            
             const fileId = await createStorage(idToken)
             const sampleFile = event.target.files[0]
-
-
   
-            ////////////////////////////////////////////////////////////////////////    UPLOAD FILE TO AMPLIFY STORAGE
+            ////////////////////////////////////////////////////////////////////////    UPLOAD FILE TO AMPLIFY STORAGE    ////////////////////////////////////////////////////////////////////////
+
+            globalStates.setCurrentProcess("uploading sample to storage")
+
             await uploadFileApi(idToken, fileId, sampleFile)
             console.log(sampleFile)
             const fileIas = await getFileIas(idToken, fileId)
-            const savedSampleData = await saveSampleInfos("sample", sampleFile.name, fileIas)
+            const savedSampleData = await saveSampleInfos("sample", sampleFile.name, fileId)
             console.log('savedSampleData in supabase:', savedSampleData)
 
+            const audioData = await getConvertedFile(idToken, fileIas)
+            const audioBuffer = await initSource(globalStates.audioContext as AudioContext, audioData.blob) 
+            sampleStore.addSampleObject({
+              audiobuffer: audioBuffer, 
+              filename: audioData.fileName
+            })
 
 
-            //////////////////////////////////////////////////////////////////////// EXTRACT LOOPS FROM FILE
+            //////////////////////////////////////////////////////////////////////// EXTRACT LOOPS FROM FILE    ////////////////////////////////////////////////////////////////////////
             // const loopExtractorJobId = await processLoopExtractor(idToken, fileIas)
             // let loopExtractorProcessStatus = "processing"
             // while (!['success', 'error'].includes(loopExtractorProcessStatus)) {
@@ -50,42 +63,106 @@ export const SampleSelector = ({ trackInfos }: { trackInfos: SampleType[] }) => 
             // console.log('savedLoopExtractorData in supabase:', savedLoopExtractorData)
 
 
-            ////////////////////////////////////////////////////////////////////////    STRECH FILE
-            // atm - timecontrol takes dry sample IAS
-            // replace fileIas by extracted loops ias for complete fx chain
-            const timeControlJobId = await processTimeControl(idToken, fileIas, 0.2)
-            let timeControlProcessStatus = "processing"
-            while (!['success', 'error'].includes(timeControlProcessStatus)) {
+            ////////////////////////////////////////////////////////////////////////    STRECH FILE   ////////////////////////////////////////////////////////////////////////
+
+            // SOUND STRETCHER
+            globalStates.setCurrentProcess("stretching sound")
+
+            const slowedTimeControlJobId = await processTimeControl(idToken, fileIas, 0.8)
+            let slowedTimeControlProcessStatus = "processing"
+            while (!['success', 'error'].includes(slowedTimeControlProcessStatus)) {
               console.log("stretching sounds...")
-              timeControlProcessStatus = await getProcessingInfos(idToken, timeControlJobId, "timepitchcontrol")
+              slowedTimeControlProcessStatus = await getProcessingInfos(idToken, slowedTimeControlJobId, "timepitchcontrol")
               await new Promise(resolve => setTimeout(resolve, 5000))
             }
 
-            const timeControlProcessedId = await getProcessedId(idToken, timeControlJobId, "timepitchcontrol")
-            const savedTimeControlData = await saveSampleInfos("timecontrol", "0.2", timeControlProcessedId, savedSampleData.savedInfos.id)
-            console.log("savedTimeControlData in supabase:", savedTimeControlData)
+            const slowedTimeControlProcessedId = await getProcessedId(idToken, slowedTimeControlJobId, "timepitchcontrol")
+            const savedSlowedTimeControlData = await saveSampleInfos("timecontrol", "0.2", slowedTimeControlProcessedId, savedSampleData.savedInfos.id)
+            console.log("savedTimeControlData in supabase:", savedSlowedTimeControlData)
 
-
-            ////////////////////////////////////////////////////////////////////////    SPATIALIZE FILE
-
-
-
-            // const jobId = await processStereoToSpatial(idToken, fileIas, 5)
-  
-            // let processStatus = 'processing'
-            // while (!['success', 'error'].includes(processStatus)) {
-            //     console.log("processing audio...")
-            //     processStatus = await getProcessingInfos(idToken, jobId)
-            //     await new Promise(resolve => setTimeout(resolve, 5000))
-  
-            // }
-  
+            const stretchedAudioData = await getConvertedFile(idToken, slowedTimeControlProcessedId)
+            const stretchedAudioBuffer = await initSource(globalStates.audioContext as AudioContext, stretchedAudioData.blob)  
+            sampleStore.addSampleObject({
+              audiobuffer: stretchedAudioBuffer, 
+              filename: stretchedAudioData.fileName
+            })
 
 
 
-            
-            // const processedId = await getProcessedId(idToken, jobId)
+            ////////////////////////////////////////////////////////////////////////    SPATIALIZE FILE   ////////////////////////////////////////////////////////////////////////
+
+            // // PROCESS 3 SPATIAL API PRESETS FROM SLOWED AND DRY SOUND
+            let j = 1 // preset number
+            // LOOP FOR SLOWED SOUND
+            for (let i = 0; i < 3; i++) {
+              globalStates.setCurrentProcess(`spatializing stretched sound, preset ${i+1}/3...`)
+
+              const spatializedJobId = await processStereoToSpatial(idToken, slowedTimeControlProcessedId, j)
+              let spatialProcessStatus = 'processing'
+              while (!['success', 'error'].includes(spatialProcessStatus)) {
+                  console.log(`spatializing stretched sound, preset ${i+1}/3...`)
+                  spatialProcessStatus = await getProcessingInfos(idToken, spatializedJobId, "stereotospatial")
+                  await new Promise(resolve => setTimeout(resolve, 5000))
+              }
+
+              const spatialProcessedId = await getProcessedId(idToken, spatializedJobId, "stereotospatial")
+              const savedSpatializedData = await saveSampleInfos("stereotospatial", j, spatialProcessedId, savedSlowedTimeControlData.savedInfos.id)
+              console.log("savedSpatializedData in supabase:", savedSpatializedData)
+
+              const spatializedStretchedAudioData = await getConvertedFile(idToken, spatialProcessedId)
+              const spatializedStretchedAudioBuffer = await initSource(globalStates.audioContext as AudioContext, spatializedStretchedAudioData.blob) 
+              
+              sampleStore.addSampleObject({
+                audiobuffer: spatializedStretchedAudioBuffer, 
+                filename: spatializedStretchedAudioData.fileName
+              })
+
+
+              j += 2
+            }
+
+
+            j = 1
+            // LOOP FOR DRY SOUND
+            for (let i = 0; i < 3; i++) {
+              globalStates.setCurrentProcess(`spatializing dry sound, preset ${i+1}/3...`)
+
+              const spatializedJobId = await processStereoToSpatial(idToken, fileIas, j)
+              let spatialProcessStatus = 'processing'
+              while (!['success', 'error'].includes(spatialProcessStatus)) {
+                  console.log(`spatializing dry sound, preset ${i+1}/3...`)
+                  spatialProcessStatus = await getProcessingInfos(idToken, spatializedJobId, "stereotospatial")
+                  await new Promise(resolve => setTimeout(resolve, 5000))
+              }              
+
+              const spatialProcessedId = await getProcessedId(idToken, spatializedJobId, "stereotospatial")
+              const savedSpatializedData = await saveSampleInfos("stereotospatial", j, spatialProcessedId, savedSlowedTimeControlData.savedInfos.id)
+              console.log("savedSpatializedData in supabase:", savedSpatializedData)
+
+              const spatializedDryAudioData = await getConvertedFile(idToken, spatialProcessedId)
+              const spatializedAudioBuffer = await initSource(globalStates.audioContext as AudioContext, spatializedDryAudioData.blob) 
+
+              sampleStore.addSampleObject({
+                audiobuffer: spatializedAudioBuffer, 
+                filename: spatializedDryAudioData.fileName
+              })
+
+              j += 2
+            }
+
+
+            ////////////////////////////////////////////////////////////////////////    SEPARATE STEMS   ////////////////////////////////////////////////////////////////////////
+
+
+
+            ////////////////////////////////////////////////////////////////////////    GET BLOBS AND LOAD SAMPLERS   ////////////////////////////////////////////////////////////////////////
+
+            // get all blobs from amplify storage
+            // load buffers with blobs 
+            // store blobs in statemanager?
+
             // const { blob, fileInfo, fileName } = await getConvertedFile(idToken, processedId)
+
 
             
             // console.log(fileName)
@@ -160,12 +237,9 @@ export const SampleSelector = ({ trackInfos }: { trackInfos: SampleType[] }) => 
                 <div className="flex justify-center items-center group peer-checked:bg-primary peer-checked:text-black duration-200 h-full hover:bg-primary/10">
                     use my own sample
                 </div>
-                {}
-
               </label>
           
             </div>
-          </div>
           {sampleStore.selectedMode === "catalogue-sample" &&
             <div className="px-4">
               {trackInfos?.map((track, index) => (
@@ -173,11 +247,24 @@ export const SampleSelector = ({ trackInfos }: { trackInfos: SampleType[] }) => 
               ))}
             </div>
           }
+          </div>
 
-          {sampleStore.selectedMode === "user-sample" &&
+          {sampleStore.selectedMode === "user-sample" && globalStates.isProcessingSound === false &&
           <label htmlFor="file" className='cursor-pointer border-4 border-primary px-12 py-6 rounded-full hover:bg-primary/10'>select a file
             <input type="file" id="file" ref={inputFile} className='hidden' onChange={handleFileChange} />
           </label>
+          }
+
+          {globalStates.isProcessingSound &&
+            <div>
+              {globalStates.currentProcess}
+            </div>
+          }
+
+          {globalStates.isLoadingBuffer &&
+          <div>
+            loading buffers...
+          </div>
           }
 
           <div className="text-center mt-6">
