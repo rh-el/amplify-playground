@@ -157,7 +157,7 @@ export const SampleSelector = ({ trackInfos }: { trackInfos: SampleType[] }) => 
 
     return (
       <>
-      <h2 className="text-center text-8xl">loop extractor</h2>
+      <h2 className="text-center text-8xl">track selection</h2>
             <div className="border-4 border-primary rounded-3xl overflow-hidden w-full">
               <div className="flex h-16">
                 <label className="w-full cursor-pointer">

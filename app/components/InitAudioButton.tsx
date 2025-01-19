@@ -13,7 +13,7 @@ export default function InitAudioButton() {
         }
     };
 
-    const buttonclasses = globalStates.audioContext ? "p-4 border-4 border-transparent text-primary" : 'p-4 border-4 font-bold border-primary rounded-xl text-primary'
+    const buttonclasses = globalStates.audioContext ? "p-4 border-4 border-transparent text-primary" : 'p-4 border-4 font-bold border-primary rounded-xl text-primary hover:bg-primary/10'
 
   return (
 

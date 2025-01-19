@@ -6,6 +6,7 @@ export const useAudioManager = (audioContext: AudioContext | null) => {
     const { activeSource, setActiveSource } = useSampleStore();
     const sampleStore = useSampleStore()
 
+
     let currentSource: AudioBufferSourceNode | null = null
     
     const stopAudio = () => {
@@ -22,7 +23,7 @@ export const useAudioManager = (audioContext: AudioContext | null) => {
 
     const playAudio = async (timeControl?: string, spatialPreset?: string) => {
         
-        if (!audioContext) return;
+        if (!audioContext) return
         
         // double check if audio is stopped in order to avoid triggering two sources at the same time
         stopAudio();

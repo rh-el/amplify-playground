@@ -8,7 +8,6 @@ export const Header = () => {
           <a href="#sample" className="">sample selection</a>
           <a href="#playground" className="">playground</a>
         </div>
-        <button className="border border-primary rounded-full px-4 py-1">about</button>
       </nav>
   )
 }
