@@ -5,10 +5,7 @@ export async function POST(req: Request) {
 
     try {
 
-        const { name, sample_url } = await req.json()
-
-        console.log("body:", name, sample_url)
-        
+        const { name, sample_url } = await req.json()        
         
         const savedInfos = await prisma.sample.create({
             data: {
@@ -16,7 +13,6 @@ export async function POST(req: Request) {
                 sample_url: sample_url
             }
         })
-        console.log('all tracks: ', savedInfos)
 
         return NextResponse.json({ savedInfos }, { status: 200 })
 

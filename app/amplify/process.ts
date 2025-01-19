@@ -1,41 +1,6 @@
 "use server"
 
-const clientId = process.env.API_CLIENT_ID
-const clientSecret = process.env.API_CLIENT_SECRET
-
-export async function processLoopExtractor(idToken: string, fileIas: string) {
-
-    const moduleUrl = "https://api.ircamamplify.io/loopextractor/"
-
-    const requestBody = JSON.stringify({
-        audioUrl: fileIas
-    })
-
-    try {
-
-        const response = await fetch(moduleUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json', 
-                'Authorization': `Bearer ${idToken}`
-            },
-            body: requestBody
-        })
-
-        const data = await response.json()
-        console.log("loop extractor data: ",data)
-        return data.id
-
-    } catch (error) {
-        console.error('error extracting loop with loop extractor module: ', error)
-        throw error
-
-    }
-
-
-}
-
+// fetch timepitchcontrol endpoint
 export async function processTimeControl(idToken: string, fileIas: string, speedFactor: number) {
 
     const moduleUrl = "https://api.ircamamplify.io/timepitchcontrol/"
@@ -58,7 +23,6 @@ export async function processTimeControl(idToken: string, fileIas: string, speed
         })
 
         const data = await response.json()
-        console.log("time control data: ", data)
         return data.id
 
     } catch (error) {
@@ -68,6 +32,8 @@ export async function processTimeControl(idToken: string, fileIas: string, speed
     }
 }
 
+
+// fetch stereotospatial endpoint
 export async function processStereoToSpatial(idToken: string, fileIas: string, presetId: number) {
 
     const moduleUrl = "https://api.ircamamplify.io/stereotospatial/"
@@ -90,7 +56,6 @@ export async function processStereoToSpatial(idToken: string, fileIas: string, p
         })
 
         const data = await response.json()
-        console.log("stereoToSpatial data: ",data)
         return data.id
 
     } catch (error) {
@@ -100,6 +65,7 @@ export async function processStereoToSpatial(idToken: string, fileIas: string, p
     }
 }
 
+// get status of current processing
 export async function getProcessingInfos(idToken: string, convertedFileId: string, module: string) {
 
     const moduleUrl = `https://api.ircamamplify.io/${module}/${convertedFileId}`
@@ -115,7 +81,6 @@ export async function getProcessingInfos(idToken: string, convertedFileId: strin
         })
 
         const data = await response.json()
-        console.log("data in getProcessingInfos: ", data)
         return data.job_infos.job_status
 
     } catch (error) {
@@ -124,6 +89,7 @@ export async function getProcessingInfos(idToken: string, convertedFileId: strin
 
 }
 
+// get id / ias from a process
 export async function getProcessedId(idToken: string, jobId: string, module: string) {
 
     const moduleUrl = `https://api.ircamamplify.io/${module}/${jobId}`
@@ -139,20 +105,48 @@ export async function getProcessedId(idToken: string, jobId: string, module: str
         })
 
         const data = await response.json()
-        console.log("data in getProcessedId: ", data)
 
         // if (module === "loopextractor") return data.job_infos.report_info.report.loops
-        if (module === "timepitchcontrol") return data.job_infos.report_info.report.outputFile.id
+        if (module === "timepitchcontrol") return [ data.job_infos.report_info.report.outputFile.id, data.job_infos.report_info.report.outputFile.ias]
 
         // replace binauralFile by immersiveFile for wav
         if (module === "stereotospatial") return data.job_infos.report_info.report.binauralFile.id
-
-
 
     } catch (error) {
         console.error('error getting processed id: ', error)
         throw error
     }
 
-
 }
+
+
+// export async function processLoopExtractor(idToken: string, fileIas: string) {
+
+//     const moduleUrl = "https://api.ircamamplify.io/loopextractor/"
+
+//     const requestBody = JSON.stringify({
+//         audioUrl: fileIas
+//     })
+
+//     try {
+
+//         const response = await fetch(moduleUrl, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Accept': 'application/json', 
+//                 'Authorization': `Bearer ${idToken}`
+//             },
+//             body: requestBody
+//         })
+
+//         const data = await response.json()
+//         console.log("loop extractor data: ",data)
+//         return data.id
+
+//     } catch (error) {
+//         console.error('error extracting loop with loop extractor module: ', error)
+//         throw error
+
+//     }
+// }

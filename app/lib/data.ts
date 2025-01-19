@@ -8,12 +8,11 @@ export const getTracks = async() => {
 
     try {
 
-        
         const response = await fetch(`${baseUrl}/api/get-tracks`, {
             headers: {}
         })
         const allTracksData = await response.json()
-        console.log(allTracksData)
+
         return allTracksData
 
     } catch (error) {
@@ -22,6 +21,7 @@ export const getTracks = async() => {
     }
 }
 
+// db storing management fetching corresponding endpoint
 export const saveSampleInfos = async(table: string, param: string | number, url: string, foreignId?: number) => {
 
     let requestBody, response, savedData
@@ -42,23 +42,6 @@ export const saveSampleInfos = async(table: string, param: string | number, url:
 
             savedData = await response.json()
             return savedData
-
-        // case "loop":
-
-        //     requestBody = JSON.stringify({
-        //     loop_number: Number(param),
-        //     sample_id: foreignId,
-        //     ias_loop_url: url
-        //     })
-
-        //     response = await fetch(`${baseUrl}/api/save-loop-infos`, {
-        //         method: "POST",
-        //         headers: {},
-        //         body: requestBody
-        //     })
-
-        //     savedData = await response.json()
-        //     return savedData
         
         case "timecontrol":
 
@@ -94,22 +77,39 @@ export const saveSampleInfos = async(table: string, param: string | number, url:
             savedData = await response.json()
             return savedData
 
-        case "stem":
+        // case "loop":
 
-            requestBody = JSON.stringify({
-            stem_instrument: Number(param),
-            spatial_id: foreignId,
-            ias_stem_url: url
-            })
+        //     requestBody = JSON.stringify({
+        //     loop_number: Number(param),
+        //     sample_id: foreignId,
+        //     ias_loop_url: url
+        //     })
 
-            response = await fetch(`${baseUrl}/api/save-stem-infos`, {
-                method: "POST",
-                headers: {},
-                body: requestBody
-            })
+        //     response = await fetch(`${baseUrl}/api/save-loop-infos`, {
+        //         method: "POST",
+        //         headers: {},
+        //         body: requestBody
+        //     })
 
-            savedData = await response.json()
-            return savedData
+        //     savedData = await response.json()
+        //     return savedData
+
+        // case "stem":
+
+        //     requestBody = JSON.stringify({
+        //     stem_instrument: Number(param),
+        //     spatial_id: foreignId,
+        //     ias_stem_url: url
+        //     })
+
+        //     response = await fetch(`${baseUrl}/api/save-stem-infos`, {
+        //         method: "POST",
+        //         headers: {},
+        //         body: requestBody
+        //     })
+
+        //     savedData = await response.json()
+        //     return savedData
 
         default:
             break;
@@ -118,6 +118,7 @@ export const saveSampleInfos = async(table: string, param: string | number, url:
 
 }
 
+// get all ias from sample id for buffer feeding
 export const getAllIasFromSample = async (id: number) => {
 
     try {

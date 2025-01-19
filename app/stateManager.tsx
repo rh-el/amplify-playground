@@ -10,24 +10,25 @@ export const useSampleStore = create<SampleStoreType>((set) => ({
     setIdToken: (idToken: string) => set(() => ({ idToken: idToken })),
     timeControl: "time-normal",
     setTimeControl: (control: string) => set(() => ({ timeControl: control})),
-    
-    // center: INITIAL_CENTER,
-    // setCenter: (lng: number, lat: number) => set(() => ({ center: [lng, lat]})),
-    // zoom: INITIAL_ZOOM,
-    // setZoom: (num: number) => set(() => ({ zoom: num })),
-    // selectMode: false,
-    // setSelectMode: (bool: boolean) => set(() => ({ selectMode: bool })),
-    // selectedArea: null,
-    // setSelectedArea: (arr: string[] | null) => set(() => ({ selectedArea: arr })),
-    // sampleSelectionMode: false,
-    // setSampleSelectionMode: (bool: boolean) => set(() => ({ sampleSelectionMode: bool })),
-    // editMode: false,
-    // setEditMode: (bool: boolean) => set(() => ({ editMode: bool })),
-    // loadingPanel: false,
-    // setLoadingPanel: (bool: boolean) => set(() => ({ loadingPanel: bool })),
+    spatialPreset: "spatial-one",
+    setSpatialPreset: (preset: string) => set(() => ({ spatialPreset: preset })),
+    activeSource: null,
+    setActiveSource: (buffer: AudioBufferSourceNode | null) => set(() => ({ activeSource: buffer})),
+    stopActiveSource: () => {
+        set((state) => {
+            if (state.activeSource) {
+                try {
+                    state.activeSource.stop();
+                } catch (error) {
+                    console.error('Error stopping active source:', error);
+                }
+            }
+            return { activeSource: null };   
+        })
+    },
+    selectedTrack: "",
+    setSelectedTrack: (id: string) => set(() => ({ selectedTrack: id }))
 
-    // audioContext: null,
-    // setAudioContext: (context: AudioContext | null) => set(() => ({ audioContext: context }))
 }))
 
 export const useGlobalStates = create<GlobalStateType>((set) => ({

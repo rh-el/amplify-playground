@@ -5,10 +5,7 @@ export async function POST(req: Request) {
 
     try {
 
-        const { time_speed, loop_id, ias_time_url } = await req.json()
-
-        console.log("body:", time_speed, loop_id, ias_time_url)
-        
+        const { time_speed, loop_id, ias_time_url } = await req.json()        
         
         const savedInfos = await prisma.time.create({
             data: {
@@ -17,8 +14,7 @@ export async function POST(req: Request) {
                 ias_time_url: ias_time_url
             }
         })
-        console.log('savedInfos: ', savedInfos)
-
+        
         return NextResponse.json({ savedInfos }, { status: 200 })
 
     } catch (error) {

@@ -5,10 +5,7 @@ export async function POST(req: Request) {
 
     try {
 
-        const { time_id, spatial_preset, ias_spatial_url } = await req.json()
-
-        console.log("body:", time_id, spatial_preset, ias_spatial_url)
-        
+        const { time_id, spatial_preset, ias_spatial_url } = await req.json()        
         
         const savedInfos = await prisma.spatial.create({
             data: {
@@ -17,7 +14,6 @@ export async function POST(req: Request) {
                 ias_spatial_url: ias_spatial_url
             }
         })
-        console.log('savedInfos: ', savedInfos)
 
         return NextResponse.json({ savedInfos }, { status: 200 })
 

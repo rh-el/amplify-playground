@@ -128,7 +128,6 @@ export async function getConvertedFile(idToken: string, iasId: string) {
 
         const fileInfo = await fileInfoResponse.json()
         const fileName = fileInfo.filename
-        console.log("data in getConvertedFile: ", fileInfo)
 
         const storageUrl = `https://storage.ircamamplify.io/${iasId}/${fileName}`
 
@@ -156,3 +155,4 @@ export async function getConvertedFile(idToken: string, iasId: string) {
     }
 
 }
+

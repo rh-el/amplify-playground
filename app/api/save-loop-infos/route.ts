@@ -5,10 +5,7 @@ export async function POST(req: Request) {
 
     try {
 
-        const { loop_number, sample_id, ias_loop_url } = await req.json()
-
-        console.log("body:", loop_number, sample_id, ias_loop_url)
-        
+        const { loop_number, sample_id, ias_loop_url } = await req.json()        
         
         const savedInfos = await prisma.loop.create({
             data: {
@@ -17,7 +14,6 @@ export async function POST(req: Request) {
                 ias_loop_url: ias_loop_url
             }
         })
-        console.log('savecInfos: ', savedInfos)
 
         return NextResponse.json({ savedInfos }, { status: 200 })
 

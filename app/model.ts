@@ -10,6 +10,14 @@ export interface SampleStoreType {
     setIdToken: (idToken: string) => void;
     timeControl: string
     setTimeControl: (control: string) => void;
+    spatialPreset: string;
+    setSpatialPreset: (preset: string) => void
+    activeSource: AudioBufferSourceNode | null;
+    setActiveSource: (buffer: AudioBufferSourceNode | null) => void;
+    stopActiveSource: () => void;
+    selectedTrack: string
+    setSelectedTrack: (id: string) => void
+    
 }
 
 export interface SampleType {
@@ -21,8 +29,9 @@ export interface SampleType {
 }
 
 export interface SampleObjectType {
-    audiobuffer: AudioBuffer,
-    filename: string
+    audiobuffer: AudioBuffer | null,
+    filename: string,
+    blob: Blob
 }
 
 export interface GlobalStateType {
