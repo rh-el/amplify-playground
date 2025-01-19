@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## IRCAM AMPLIFY PLAYGROUND
 
-First, run the development server:
+run:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm i --legacy-peer-deps
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+exercice for IRCAM Amplify using their API.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+modules used:
+  timepitchcontrol
+  stereotospatial
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+  
+click on init audio button
 
-## Learn More
+select a track from the catalogue, or upload yours
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### signal flow
+the raw audio is first stretched down
+then the raw, as well as the stretched audio, are being spatialized using presets 1, 3 and 5
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+### track from the catalogue:
+the tracks from the catalogue are already processed, their IAS is stored in a supabase db.
+on a track selection, related samples are requested from the ircam amplify server
+please wait for the loader to disapear before starting clicking on the playground buttons
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+aisha devi's stretched factor is a bit too high (0.8) to really be felt as slowed down if user doesn't know the original track
+the effect has been pushed further on haley blais's one (0.5)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+### file upload
+the file upload takes few minutes to process the track through the whole chain
+user has an indication of the current step of the process above the 'go to playground' button
+the process is finished when there is no more text
+atm, please reload the page and select the newly updated track from the catalogue
+
+
+### playground
+on a button click, a new audio source is initialized with corresponding button combination
