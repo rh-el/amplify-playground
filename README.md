@@ -5,6 +5,8 @@ run:
 
 ```bash
 npm i --legacy-peer-deps
+npx prisma generate
+npm run dev
 ```
 
 exercice for IRCAM Amplify using their API. <br>
