@@ -18,24 +18,24 @@ export default async function Main() {
         <>
         <Header />
         <div className='h-full flex flex-col justify-center items-center gap-72'>
-            <section id="home" className="h-svh box-border flex flex-col justify-center items-center gap-72 pt-[66px] ">
-            <div className='text-[8em]'>
-                <h1 className="font-dm-mono h-32">IRCAM Amplify</h1>
-                <h2 className="font-ibm-plex pl-52 text-clip">Playground</h2>
-            </div>
-            <div className="flex flex-col gap-4">
-                <InitAudioButton />
-                <a href='#sample' className="flex flex-col justify-center items-center gap-4">
-                <span className="">discovery</span>
-                
-                    <Image
-                        src="/arrow.svg"
-                        width={16}
-                        height={16}
-                        alt="an arrow icon"
-                    />
-                </a>
-            </div>
+            <section id="home" className="h-svh box-border flex flex-col justify-center items-center gap-20 pt-[66px] ">
+                <div className='text-[8em]'>
+                    <h1 className="font-dm-mono h-32">IRCAM Amplify</h1>
+                    <h2 className="font-ibm-plex pl-52 text-clip">Playground</h2>
+                </div>
+                <div className="flex flex-col gap-4">
+                    <InitAudioButton />
+                    <a href='#sample' className="flex flex-col justify-center items-center gap-4">
+                    <span className="">discovery</span>
+                    
+                        <Image
+                            src="/arrow.svg"
+                            width={16}
+                            height={16}
+                            alt="an arrow icon"
+                        />
+                    </a>
+                </div>
             </section>
 
             {/* ////////////////////////////////////////////// SAMPLE SELECTION //////////////////////////////////////////////*/}
